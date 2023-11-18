@@ -1,0 +1,382 @@
+﻿@model App_Model.PIEntity.PIMaster
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    <style>
+        .bg-white {
+            background-color: rgb(255 255 255 / 1);
+        }
+
+        .container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            padding-top: 12rem;
+        }
+
+        .heading {
+            text-align: center;
+        }
+
+        .title {
+            font-size: 3.75rem;
+            letter-spacing: -0.025em;
+        }
+
+        .sub-title {
+            font-size: 1.125rem;
+            line-height: 2rem;
+            color: rgb(75 85 99 / 1);
+            margin-top: 0.5rem;
+        }
+
+        .user-input {
+            margin-top: 2.5rem;
+        }
+
+        .qr-container {
+            padding: 2rem;
+        }
+
+        .qr-code {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+            .qr-code img {
+                padding: 1rem;
+                border: 2px solid black;
+                margin-bottom: 1.5rem;
+                border-radius: 5px;
+            }
+
+            .qr-code button a {
+                text-decoration: none;
+                color: black;
+            }
+    </style>
+}
+
+<div class="row">
+    <div class="col-md-3 col-sm-4 col-6 m-0 p-1 pt-0">
+        <select id="BillList" asp-items="ViewBag.PIList" class="form-control form-control-sm" style="width:100%">
+            <option value="">--Select PI--</option>
+        </select>
+    </div>
+    <div class="col-md-3 col-sm-4 col-6 m-0 p-1 pt-0 text-left">
+        <a id="findBillBtn" class="btn btn-sm btn-outline-primary px-3 radius-10">Find Bill</a>
+    </div>
+</div>
+
+<div class="col-xl-12 mx-auto">
+    <div class="card-header bg-default">
+        <h5 class="card-title m-0">Add/Edit</h5>
+    </div>
+    <div class="card">
+        <form id="formPost" asp-action="PICreate" asp-controller="PI" asp-area="" method="post" enctype="multipart/form-data">
+            @Html.AntiForgeryToken()
+            <div class="card-body">
+                <div class="border p-3 rounded">
+                    <div class="row">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        @if (Model.PIMasterId != 0)
+                        {
+                            <input type="hidden" asp-for="PIMasterId" value="@Model.PIMasterId" />
+                        }
+                        else
+                        {
+                            <input type="hidden" asp-for="PIMasterId" value="0" />
+                        }
+                        <div class="col-md-3 col-sm-4 col-6 m-0 p-1 pt-0">
+                            <label class="form-label m-1 p-0" asp-for="PICode"></label>
+                            <input asp-for="PICode" class="form-control form-control-sm" placeholder="PI Code" autocomplete="off" readonly>
+                        </div>
+                        
+                        <div class="col-md-3 col-sm-4 col-6 m-0 p-1 pt-0">
+                            <label class="form-label m-1 p-0" asp-for="CustomerId"></label>
+                            <select asp-for="CustomerId" id="CustomerId" name="CustomerId" asp-items="ViewBag.CustomerId" onchange="CustomerWiseLocationtList()" class="form-control form-control-sm single-select " style="width:100%">
+                                <option value=""></option>
+                            </select>                          
+                            <span asp-validation-for="CustomerId" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-3 col-sm-4 col-6 m-0 p-1 pt-0">
+                            <label class="form-label m-1 p-0" asp-for="ShipToId"></label>
+                            <select asp-for="ShipToId" id="ShipToId" name="ShipToId" asp-items="ViewBag.ShipToId" class="form-control form-control-sm single-select " style="width:100%">
+                                <option value=""></option>
+                            </select>
+                            <span asp-validation-for="ShipToId" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-3 col-sm-4 col-6 m-0 p-1 pt-0">
+                            <label class="form-label m-1 p-0" asp-for="BuyerId"></label>
+                            <select asp-for="BuyerId" id="BuyerId" name="BuyerId" asp-items="ViewBag.BuyerId" class="form-control form-control-sm single-select " style="width:100%">
+                                <option value=""></option>
+                            </select>
+                            <span asp-validation-for="BuyerId" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-3 col-sm-4 col-6 m-0 p-1 pt-0">
+                            <label class="form-label m-1 p-0" asp-for="Dyecond"></label>
+                            <input  asp-for="Dyecond" class="form-control form-control-sm">
+                            <span asp-validation-for="Dyecond" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-3 col-sm-4 col-6 m-0 p-1 pt-0">
+                            <label class="form-label m-1 p-0" asp-for="OrderType"></label>
+                            <input  asp-for="OrderType" class="form-control form-control-sm">
+                            <span asp-validation-for="OrderType" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-3 col-sm-4 col-6 m-0 p-1 pt-0">
+                            <label class="form-label m-1 p-0" asp-for="TrackingNumber"></label>
+                            <input  asp-for="TrackingNumber" class="form-control form-control-sm">
+                            <span asp-validation-for="TrackingNumber" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-3 col-sm-4 col-6 m-0 p-1 pt-0">
+                            <label class="form-label m-1 p-0" asp-for="Description"></label>
+                            <input asp-for="Description" class="form-control form-control-sm" placeholder="Description">
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-3 col-sm-4 col-6 m-0 p-1 pt-0">
+                            <label class="form-label m-1 p-0" asp-for="OrderNo"></label>
+                            <input asp-for="OrderNo" class="form-control form-control-sm" placeholder=" Order Number">
+                            <span asp-validation-for="OrderNo" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-3 col-sm-4 col-6 m-0 p-1 pt-0">
+                            <label class="form-label m-1 p-0" asp-for="CustomerPO"></label>
+                            <input asp-for="CustomerPO" class="form-control form-control-sm" placeholder="Customer PO">
+                            <span asp-validation-for="CustomerPO" class="text-danger"></span>
+                        </div>                       
+                    </div>
+                    <div class="row border p-3 rounded mt-3">
+
+                        @if (Model.PIMasterId == 0)
+                        {
+                           
+                            <div class="col-md-3 col-sm-4 col-6 m-0 p-1 pt-0">
+                                <label class="form-label m-1 p-0">Product</label>
+                                <select id="ProductId" name="ProductId" asp-items="ViewBag.ProductList" onchange="getItemInfo()" class="form-control form-control-sm single-select " style="width:100%">
+                                    <option value=""></option>
+                                </select>
+                            </div>
+                            <div class="col-md-3 col-sm-4 col-6 m-0 p-1 pt-0">
+                                <label class="form-label m-1 p-0">Product Details</label>
+                                <input id="ProductDetails" name="ProductDetails" class="form-control form-control-sm" placeholder="ProductDetails">
+                            </div>
+                            <div class="col-md-3 col-sm-4 col-6 m-0 p-1 pt-0">
+                                <label class="form-label m-1 p-0">Unit</label>
+                                <input id="Unit" name="Unit" class="form-control form-control-sm" placeholder="Unit">
+                            </div>
+                            <div class="col-md-3 col-sm-4 col-6 m-0 p-1 pt-0">
+                                <label class="form-label m-1 p-0">Unit Rate</label>
+                                <input id="UnitRate" name="UnitRate" class="form-control form-control-sm" placeholder="Unit Rate">
+                            </div>
+                            <div class="col-md-3 col-sm-4 col-6 m-0 p-1 pt-0">
+                                <label class="form-label m-1 p-0">Item No</label>
+                                <input id="ItemNo" name="ItemNo" class="form-control form-control-sm" placeholder="ItemNo">
+                            </div>
+                            <div class="col-md-3 col-sm-4 col-6 m-0 p-1 pt-0">
+                                <label class="form-label m-1 p-0">Order Qty</label>
+                                <input type="number" id="Qty" name="Qty" class="form-control form-control-sm" placeholder="Qty">
+                            </div>
+                            <div class="col-md-3 col-sm-4 col-6 m-0 p-1 pt-0">
+                                <label class="form-label m-1 p-0">Ex-Shipment Date</label>
+                                <input type="date" id="exShipmentDate" name="exShipmentDate" class="form-control form-control-sm" placeholder="ex Shipment Date">
+                            </div>
+                            
+                            <div class="col-md-1 col-sm-1 col-1 m-0 p-1 pt-0">
+                                <button id="addToList" class="btn btn-sm btn-outline-primary px-3 radius-10 mt-sm-4">Load</button>
+                            </div>
+                        }
+                        <div class="col-12">
+                            <div class="card-body table-responsive m-0 p-0 ">
+                                <table id="Details" class="table table-hover text-center" style="width: 100%;">
+                                    <thead>
+                                        <tr>
+                                            <th id="DetailId" class="pl-1">Details</th>
+                                            <th class="pl-1">Item</th>
+                                            <th class="pl-1" style="display:none;">Item Id</th>
+                                            <th class="pl-1">Description</th>
+                                            <th class="pl-1">Exp. Shipment</th>
+                                            <th class="pl-1">Qty</th>
+                                            <th class="pl-1">Unit Price</th>
+                                            <th class="pl-1">Total</th>
+                                            <th class="pl-1">Option</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (Model.PIMasterId != 0)
+                                        {
+
+                                            if (Model.PIDetails.Count() > 0)
+                                            {
+                                                foreach (var details in Model.PIDetails)
+                                                {
+                                                    <tr>
+                                                        <td>@details.PIDetailsId</td>
+                                                        <td>@details.ProductMaster.ProductName</td>
+                                                        <td style="display:none;"></td>
+                                                        <td>@details.ProductMaster.ProductDetails</td>
+                                                        <td>@details.ExpShipmentDate</td>
+                                                        <td>@details.OrderQty</td>
+                                                        <td>@details.UnitPrice</td>
+                                                        <td>@(details.OrderQty * details.UnitPrice)</td>
+                                                        <td></td>
+                                                    </tr>
+                                                }
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ">
+                        <div class="col text-left mt-2">
+                            @if (Model.PIMasterId != 0)
+                            {
+                                @* <input type="submit" class="btn btn-outline-primary px-3 radius-10" value="Update" name="Action">*@
+                            }
+                            else
+                            {
+                                <a class="btn btn-outline-primary px-3 radius-10" id="save" onclick="SaveData(this);">Save</a>
+                                <input type="submit" class="btn btn-outline-primary px-3 radius-10" value="Save" name="Action" id="ConfirmSave" style="display:none">
+                            }
+                            <a href="@Url.Action("PICreate")" class="btn btn-outline-warning px-3 radius-10">Clear</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+@section Scripts{
+    @{
+        await Html.RenderPartialAsync(partialViewName: "_ValidationScriptsPartial.cshtml");
+    }
+    <script>
+        $(document).ready(function () {
+            //find bill
+            $("#findBillBtn").click(function (e) {
+                e.preventDefault();
+                var selectedBillId = $("#BillList").val();
+                var url = "@Url.Action("PICreate", new { PICode = "__id__" })";
+                url = url.replace("__id__", selectedBillId);
+                window.location.href = url;
+            });
+
+
+
+            $("#addToList").click(function (e) {
+                e.preventDefault();
+                var ProductId = $.trim($("#ProductId :selected").val()),
+                    ProductrName = $.trim($("#ProductId :selected").text()),
+                    productDetails = $.trim($("#ProductDetails").val()),
+                    Unit = $.trim($("#Unit").val()),
+                    UnitRate = $.trim($("#UnitRate").val()),
+                    Total = $.trim($("#UnitRate").val()),
+                    ItemNo = $.trim($("#ItemNo").val()),
+                    Qty = $.trim($("#Qty").val()),
+                    Total = parseFloat((UnitRate * Qty).toFixed(3)),
+                    exShipmentDate = $.trim($("#exShipmentDate").val()),
+                    detailsTableBody = $("#Details tbody");
+                console.log("addlist click")
+                if (ProductId == "") {
+                    Swal.fire('warning', 'select Product details', 'warning');
+                    return false;
+                }
+                else if (Qty == "") {
+                    Swal.fire('warning', 'select Qty', 'warning');
+                    return false;
+                }
+
+
+                var productItem = '<tr class="highlight"><td class="ml-2">new</td><td>' + ProductrName + '</td><td style="display:none;">' + ProductId + '</td><td>' + productDetails + '</td><td>' + exShipmentDate + '</td><td>' + Qty + '</td><td>' + UnitRate + '</td><td>' + Total + '</td><td><a data-itemId="0" href="#" class="btn btn-sm btn-danger btn-xs deleteItem"><i class="fas fa-trash-alt"></i></a></td></tr>';
+                detailsTableBody.append(productItem);
+                clearItem();
+            });
+            //remove item from table
+            $(document).on('click', 'a.deleteItem', function (e) {
+                e.preventDefault();
+                var $self = $(this);
+                if ($(this).attr('data-itemId') == "0") {
+                    $(this).parents('tr').css("background-color", "#D92701").fadeOut(100, function () {
+                        $(this).remove();
+                    });
+                }
+
+            });
+        });
+        function SaveData(e) {
+            var listName = "PIDetails";
+            var isValid = true;
+            var errorRow = 0;
+            var qtd = 0;
+            $("#Details > tbody > tr").each(function () {
+
+                var did = $(this).find('td:eq(0)').html(); //Id
+                var ProductId = $(this).find('td:eq(2)').html(); //SupplierId
+                var UnitPrice = $(this).find('td:eq(6)').html(); //UnitName
+                var OrderQty = $(this).find('td:eq(5)').html(); //UnitName
+                var ExpShipmentDate = $(this).find('td:eq(4)').html(); //SubProductMakeDate
+
+                if (did == 'new') {
+                    var detailsId = 0;
+                }
+                else {
+                    var detailsId = did;
+                }
+
+                $("#formPost").prepend("<input type='hidden' name='" + listName + "[" + qtd + "].PIDetailsId' value='" + did + "'>");
+                $("#formPost").prepend("<input type='hidden' name='" + listName + "[" + qtd + "].ProductId' value='" + ProductId + "'>");
+                $("#formPost").prepend("<input type='hidden' name='" + listName + "[" + qtd + "].UnitPrice' value='" + UnitPrice + "'>");
+                $("#formPost").prepend("<input type='hidden' name='" + listName + "[" + qtd + "].OrderQty' value='" + OrderQty + "'>");
+                $("#formPost").prepend("<input type='hidden' name='" + listName + "[" + qtd + "].ExpShipmentDate' value='" + ExpShipmentDate + "'>");
+                qtd += 1;
+            });
+            var rowCount = $('#Details tr').length;
+               
+            $("#ConfirmSave").click();
+        }
+        function clearItem() {
+            //$("#ProductId").val('');
+            //$("#ProductId").text('');
+            $("#ProductDetails").val('');
+            $("#Unit").text('');
+            $("#UnitRate").val('');
+            $("#ItemNo").val('');
+            $("#Qty").val('');
+            $("#exShipmentDate").text('');
+        }
+        function getItemInfo() {
+            var url = "@Url.Action("GetItemInfo","PI")",
+                ProductId = $('#ProductId').val(),
+                ProductDetails = $('#ProductDetails'),
+                Unit = $('#Unit'),
+                UnitRate = $('#UnitRate');
+                ItemNo = $('#ItemNo');
+                console.log(url);
+            $.getJSON(url, { ProductId: ProductId }, function (response) {
+                console.log(response)
+                console.log(response.data)
+                ProductDetails.val(response.data.ProductDetails);
+                Unit.val(response.data.Unit);
+                UnitRate.val(response.data.UnitPrice);
+                ItemNo.val(response.data.ProductCode);
+            });
+        };
+        function CustomerWiseLocationtList() {
+            var url = "@Url.Action("GetCustomerLocation","PI")";
+            var CustomerId = $('#CustomerId').val();
+            var ShipToId = $('#ShipToId');
+            ShipToId.empty();
+            ShipToId.append($("<option></option>").attr("value", '').text('--Select--'));
+            $.getJSON(url, { CustomerId: CustomerId }, function (response) {
+                console.log(response)
+                $.each(response, function (index, item) {
+                    ShipToId.append($("<option></option>").attr("value", item.Value).text(item.Text));
+                });
+            });
+        }
+
+
+    </script>
+}

@@ -1,0 +1,87 @@
+﻿@model App_Model.ProductInfo.OrderProductMaster
+@{
+    ViewData["Title"] = "Product Info";
+    Layout = "~/Views/Shared/_LayoutLR.cshtml";
+}
+
+<div class="card-header py-2 bg-light">
+    <div class="row row-cols-1 row-cols-lg-3">
+        <div class="col">
+            <div class="">
+                <small>from</small>
+                <address class="m-t-5 m-b-5">
+                    @Model.ProductName
+                </address>
+            </div>
+        </div>
+        <div class="col">
+            <div class="">
+                <small>to</small>
+                <address class="m-t-5 m-b-5">
+                    @Model.Description
+                </address>
+            </div>
+        </div>
+        <div class="col">
+            <div class="">
+                <small>Invoice / July period</small>
+                <div class=""><b>August 3,2012</b></div>
+                <div class="invoice-detail">
+                    @Model.MakeDate
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="card-body">
+    <div class="table-responsive">
+        <table class="table table-invoice">
+            <thead>
+                <tr>
+                    <th class="text-center" width="10%">RATE</th>
+                    <th class="text-center" width="10%">HOURS</th>
+                    <th class="text-right" width="20%">LINE TOTAL</th>
+                    <th class="text-right" width="20%">LINE TOTAL</th>
+                    <th class="text-right" width="20%">LINE TOTAL</th>
+                    <th class="text-right" width="20%">LINE TOTAL</th>
+                    <th class="text-right" width="20%">LINE TOTAL</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var data in Model.OrderProductDetails)
+                {
+                    <tr>
+                        <td>
+                            <span class="text-inverse">@data.MaterialName</span><br>
+                            <small>@data.MaterialDescription</small>
+                        </td>
+                        <td class="text-center">@data.UnitName</td>
+                        <td class="text-center">
+                            @data.SupplierInfo.SupplierName
+                            <small>@data.SupplierInfo.SupplierAdddress</small>
+                        </td>
+                        <td class="text-center">@data.ProductType</td>
+                        <td class="text-center">@data.ShipmentType</td>
+                        <td class="text-center">@data.ShipmentType</td>
+                        <td class="text-right">@data.SupplierInfo.Loctitle</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+
+    $(document).ready(function () {
+            var locations1 = @Model.OrderProductDetails.Select(c=>c.SupplierInfo).ToArray();
+            console.log(locations1);
+            console.log("Please work")
+            const locations = [
+                { lat: 23.811056, lng: 90.407608, title: 'dhaka  bangladesh' },
+                { lat: 51.5074, lng: -0.1278, title: 'London' },
+                // Add more locations as needed
+            ];
+
+    });
+</script>

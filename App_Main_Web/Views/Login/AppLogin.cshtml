@@ -1,0 +1,28 @@
+﻿@model App_Model.UseEntity.User
+@{
+    ViewData["Title"] = "Login Page";
+    Layout = "~/Views/Shared/_LayoutLogin.cshtml";
+}
+
+<div class="global-container bg-dark">
+    <div class="card login-form" style="background-color:#003366;">
+        <div class="card-body">
+            <h3 class="card-title text-center">Login</h3>
+            <div class="card-text">
+                <img src="~/assets/images/logo.gif" class="img-fluid" />
+                <form class="form-body" asp-action="AppLogin" asp-controller="Login" method="post">
+                    <div class="form-group">
+                        <label for="" class="text-white">User Id</label>
+                        <input asp-for="UserId" class="form-control form-control-sm" id="UserId" placeholder="User Id" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="" class="text-white">Password</label>
+                        <input asp-for="UserPassword" class="form-control form-control-sm" id="UserPassword" placeholder="Password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary  btn-block">Login</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
