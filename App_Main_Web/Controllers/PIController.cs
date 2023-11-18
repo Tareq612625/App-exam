@@ -52,6 +52,7 @@ namespace App_Main_Web.Controllers
                     details.PIMasterCode = obj.PICode;
                     data.Add(details);
                 }
+
                
                 obj.PIDetails.AddRange(data);
 
@@ -67,7 +68,7 @@ namespace App_Main_Web.Controllers
                     ViewBag.Message = AlertMsg.SaveWarningOK(result.MESSAGES);
                     return View(obj);
                 }
-            return View(obj);
+           // return View(obj);
             //  }
             //else {
             //    ViewBag.Message = AlertMsg.SaveWarningOK("model Not work");
